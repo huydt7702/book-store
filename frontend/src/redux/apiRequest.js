@@ -71,7 +71,7 @@ export const logOut = async (dispatch, id, navigate, accessToken, axiosJWT) => {
             headers: { token: `Bearer ${accessToken}` },
         });
         dispatch(logOutSuccess());
-        navigate('/login');
+        navigate('/auth');
     } catch (err) {
         dispatch(logOutFailed());
     }
