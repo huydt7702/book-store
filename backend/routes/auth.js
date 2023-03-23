@@ -17,7 +17,7 @@ router.post("/login", function (req, res) {
     authController.loginUser(req, res);
 });
 //LOG OUT
-router.post("/logout", function (req, res) {
+router.post("/logout", verifyToken, function (req, res) {
     authController.userLogout(req, res);
 });
 
