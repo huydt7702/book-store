@@ -2,9 +2,10 @@ import classNames from 'classnames/bind';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom/dist';
+import { toast } from 'react-toastify';
 
-import { loginUser, registerUser } from '~/redux/apiRequest';
 import { FacebookIcon, GooglePlusIcon, LinkedInIcon } from '~/components/Icons';
+import { loginUser, registerUser } from '~/redux/apiRequest';
 import styles from './Auth.module.scss';
 
 const cx = classNames.bind(styles);
@@ -25,10 +26,16 @@ function Auth() {
             username,
             password,
         };
-        loginUser(newUser, dispatch, navigate);
+
+        const res = await loginUser(newUser, dispatch, navigate);
+        if (res?.status === 200) {
+            toast.success('Logged successfully');
+        } else {
+            toast.error('Something went wrong!');
+        }
     };
 
-    const handleRegister = (e) => {
+    const handleRegister = async (e) => {
         e.preventDefault();
 
         const newUser = {
@@ -36,7 +43,13 @@ function Auth() {
             email,
             password,
         };
-        registerUser(newUser, dispatch, navigate);
+
+        const res = await registerUser(newUser, dispatch, navigate);
+        if (res?.status === 200) {
+            toast.success('Registered successfully');
+        } else {
+            toast.error('Something went wrong!');
+        }
     };
 
     return (

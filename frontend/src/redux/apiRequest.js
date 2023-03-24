@@ -25,6 +25,8 @@ export const loginUser = async (user, dispatch, navigate) => {
         const res = await axios.post('/v1/auth/login', user);
         dispatch(loginSuccess(res.data));
         navigate('/');
+
+        return res;
     } catch (err) {
         dispatch(loginFailed());
     }
@@ -33,8 +35,10 @@ export const loginUser = async (user, dispatch, navigate) => {
 export const registerUser = async (user, dispatch, navigate) => {
     dispatch(registerStart());
     try {
-        await axios.post('/v1/auth/register', user);
+        const res = await axios.post('/v1/auth/register', user);
         dispatch(registerSuccess());
+
+        return res;
     } catch (err) {
         dispatch(registerFailed());
     }
@@ -67,11 +71,13 @@ export const deleteUser = async (accessToken, dispatch, id, axiosJWT) => {
 export const logOut = async (dispatch, id, navigate, accessToken, axiosJWT) => {
     dispatch(logOutStart());
     try {
-        await axiosJWT.post('/v1/auth/logout', id, {
+        const data = await axiosJWT.post('/v1/auth/logout', id, {
             headers: { token: `Bearer ${accessToken}` },
         });
         dispatch(logOutSuccess());
         navigate('/auth');
+
+        return data;
     } catch (err) {
         dispatch(logOutFailed());
     }
