@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
+const cateRoute = require("./routes/category");
 dotenv.config();
 
 mongoose.connect(process.env.MONGODB_URL, () => {
@@ -18,7 +19,8 @@ app.use(express.json());
 //ROUTES
 app.use("/v1/auth", authRoute);
 app.use("/v1/user", userRoute);
+app.use("/v1/category", cateRoute);
 
-app.listen(8000, () => {
+app.listen(8888, () => {
     console.log("Server is running");
 });

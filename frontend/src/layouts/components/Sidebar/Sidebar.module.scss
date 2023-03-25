@@ -1,0 +1,32 @@
+.wrapper {
+    width: 240px;
+}
+
+.menu-slide {
+    background-color: #eff0f3;
+}
+
+.menu__nav {
+    padding: 0;
+    width: 100%;
+}
+
+.menu__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.menu__item {
+    display: block;
+    padding: 1rem;
+    color: var(--primary-color);
+    cursor: pointer;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        text-decoration: none;
+        color: var(--primary-color);
+    }
+}
