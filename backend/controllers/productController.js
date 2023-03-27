@@ -36,10 +36,56 @@ const productController = {
     //DELETE PRODUCT
     deleteProduct: async (req, res) => {
         try {
-            const product = await Product.findByIdAndDelete(req.params.id);
+            await Product.findByIdAndDelete(req.params.id);
             res.status(200).json("Delete product successfully");
         } catch (err) {
             res.status(500).json(err);
+        }
+    },
+
+    //UPDATE PRODUCT
+    updateProduct: async (req, res) => {
+        const id = req.params.id;
+        const formData = req.body;
+
+        if (
+            !formData.title ||
+            !formData.author ||
+            !formData.desc ||
+            !formData.year ||
+            !formData.categoryId ||
+            !formData.price ||
+            !formData.image
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Please complete all information!",
+            });
+        }
+
+        const newSlug = slugify(formData.title, { lower: true });
+        const data = {
+            title: formData.title,
+            author: formData.author,
+            desc: formData.desc,
+            year: formData.year,
+            categoryId: formData.categoryId,
+            price: formData.price,
+            image: formData.image,
+            slug: newSlug,
+        };
+
+        try {
+            await Product.updateOne({ _id: id }, data);
+            res.status(200).json({
+                success: true,
+                message: "Catalog update successful",
+            });
+        } catch (err) {
+            res.status(400).json({
+                success: false,
+                message: "Catalog update failed!",
+            });
         }
     },
 };
