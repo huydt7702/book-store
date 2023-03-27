@@ -28,10 +28,45 @@ const cateController = {
     //DELETE CATEGORY
     deleteCategory: async (req, res) => {
         try {
-            const cate = await Cate.findByIdAndDelete(req.params.id);
+            await Cate.findByIdAndDelete(req.params.id);
             res.status(200).json("Delete category successfully");
         } catch (err) {
             res.status(500).json(err);
+        }
+    },
+
+    //UPDATE CATEGORY
+    updateCategory: async (req, res) => {
+        const id = req.params.id;
+        const { name } = req.body;
+
+        if (!name) {
+            return res.status(400).json({
+                success: false,
+                message: "You must enter category name",
+            });
+        }
+
+        try {
+            const category = await Cate.findById(id);
+            if (!category) {
+                return res.json("Category does not exist");
+            }
+
+            category.name = name;
+            category.slug = slugify(name, { lower: true });
+
+            await category.save();
+
+            return res.status(200).json({
+                success: true,
+                message: "Catalog update successful",
+            });
+        } catch (err) {
+            return res.status(500).json({
+                success: false,
+                message: "Catalog update failed!",
+            });
         }
     },
 };

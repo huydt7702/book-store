@@ -11,4 +11,7 @@ router.post("/add", cateController.addCategory);
 //DELETE CATEGORY
 router.delete("/delete/:id", cateController.deleteCategory);
 
+//UPDATE CATEGORY
+router.put("/update/:id", cateController.updateCategory);
+
 module.exports = router;
