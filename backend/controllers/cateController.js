@@ -2,7 +2,7 @@ const Cate = require("../models/Cate");
 const slugify = require("slugify");
 
 const cateController = {
-    //GET ALL USERS
+    //GET ALL CATEGORIES
     getAllCategories: async (req, res) => {
         try {
             const cate = await Cate.find();
