@@ -1,0 +1,75 @@
+.wrapper {
+    width: 100%;
+}
+
+.footer__top {
+    background: #efefef;
+    padding: 1.6rem 0;
+}
+
+.footer__top-intro-heading,
+.footer__top-policy-heading,
+.footer__top-contact-heading {
+    font-size: 1.7rem;
+    color: var(--text-color);
+    padding: 1.2rem 0;
+}
+
+.footer__top-intro-content {
+    font-size: 1.5rem;
+}
+
+.footer__top-policy-list {
+    list-style: none;
+    margin-bottom: 1rem;
+}
+
+.footer__top-policy-link {
+    font-size: 1.5rem;
+    color: var(--text-color);
+}
+
+.footer__top-policy-link:hover {
+    color: var(--text-color);
+    opacity: 0.8;
+    text-decoration: none;
+}
+
+.footer__top-contact {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.footer__top-contact-icon {
+    margin-right: 2.6rem;
+}
+
+.footer__top-contact-phone {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--black-color);
+    margin-bottom: 1rem;
+}
+
+.footer__top-contact-des {
+    font-size: 1.3rem;
+    color: var(--text-color);
+}
+
+.footer__top-contact-social-link {
+    margin-right: 1rem;
+}
+
+.footer__bottom {
+    height: 3.4rem;
+    background: #666;
+    text-align: center;
+}
+
+.footer__bottom-content {
+    font-size: 1.4rem;
+    color: var(--white-color);
+    margin: 0 auto;
+    line-height: 3.4rem;
+}

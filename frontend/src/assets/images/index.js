@@ -10,6 +10,11 @@ const images = {
     slider4: require('~/assets/images/slider/slider4.jpg'),
     slider5: require('~/assets/images/slider/slider5.jpg'),
     slider6: require('~/assets/images/slider/slider6.png'),
+    phoneTop: require('~/assets/images/phone_top.png'),
+    facebook: require('~/assets/images/facebook.png'),
+    tiktok: require('~/assets/images/tiktok.png'),
+    youtube: require('~/assets/images/youtube.png'),
+    zalo: require('~/assets/images/zalo.png'),
 };
 
 export default images;
