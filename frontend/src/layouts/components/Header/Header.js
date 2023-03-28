@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import images from '~/assets/images';
@@ -80,9 +80,9 @@ function Header() {
                     <section className={cx('row')}>
                         <div className={cx('col-lg-3', 'col-md-4', 'col-sm-12', 'header__logo')}>
                             <h1 className={cx('header__heading')}>
-                                <a href="/" className={cx('header__logo-link')}>
+                                <Link to="/" className={cx('header__logo-link')}>
                                     <img src={images.logo} alt="Logo" className={cx('header__logo-img')} />
-                                </a>
+                                </Link>
                             </h1>
                         </div>
 

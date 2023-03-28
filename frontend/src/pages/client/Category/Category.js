@@ -1,43 +1,42 @@
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
-import images from '~/assets/images';
 import * as productService from '~/services/productService';
-import styles from './Home.module.scss';
+import styles from './Category.module.scss';
 
 const cx = classNames.bind(styles);
 
-function Home() {
-    const [products, setProducts] = useState([]);
+function Category() {
+    const [productsByCategoryId, setProductsByCategoryId] = useState([]);
+    // eslint-disable-next-line no-unused-vars
+    const [searchParams, setSearchParams] = useSearchParams();
+    const categoryId = searchParams.get('id');
 
     useEffect(() => {
         const fetchApi = async () => {
             // setLoading(true);
-            const result = await productService.getAllProducts();
+            const allProducts = await productService.getAllProducts();
+            const result = allProducts.filter((product) => product.categoryId === categoryId);
 
-            setProducts(result);
+            setProductsByCategoryId(result);
             // setLoading(false);
         };
 
         fetchApi();
-    }, []);
+    }, [categoryId]);
 
     return (
-        <section className={cx('bestselling')}>
+        <div className={cx('wrapper')}>
             <div className={cx('container')}>
                 <div className={cx('row')}>
                     <div className={cx('bestselling__heading-wrap')}>
-                        <img
-                            src={images.logoBestSeller}
-                            alt="Sản phẩm bán chạy"
-                            className={cx('bestselling__heading-img')}
-                        />
-                        <div className={cx('bestselling__heading')}>Top bán chạy nhất tuần</div>
+                        <div className={cx('bestselling__heading')}>Danh sách sản phẩm theo danh mục</div>
                     </div>
                 </div>
 
                 <div className={cx('row', 'product__panel')}>
-                    {products?.map((product) => (
+                    {productsByCategoryId.map((product) => (
                         <div
                             key={product._id}
                             className={cx('product__panel-item', 'col-lg-3', 'col-md-4', 'col-sm-6')}
@@ -63,26 +62,9 @@ function Home() {
                         </div>
                     ))}
                 </div>
-
-                <div className={cx('row', 'bestselling__banner')}>
-                    <div className={cx('bestselling__banner-left', 'col-lg-6')}>
-                        <img
-                            src={images.banner1}
-                            alt="Banner quảng cáo"
-                            className={cx('bestselling__banner-left-img')}
-                        />
-                    </div>
-                    <div className={cx('bestselling__banner-right', 'col-lg-6')}>
-                        <img
-                            src={images.banner2}
-                            alt="Banner quảng cáo"
-                            className={cx('bestselling__banner-right-img')}
-                        />
-                    </div>
-                </div>
             </div>
-        </section>
+        </div>
     );
 }
 
-export default Home;
+export default Category;
