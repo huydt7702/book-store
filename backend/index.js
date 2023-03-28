@@ -25,6 +25,6 @@ app.use("/v1/category", cateRoute);
 app.use("/v1/product", productRoute);
 app.use("/v1/comment", commentRoute);
 
-app.listen(8000, () => {
+app.listen(5555, () => {
     console.log("Server is running");
 });
