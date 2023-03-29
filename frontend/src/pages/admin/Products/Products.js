@@ -25,13 +25,15 @@ function Products() {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [modalIsOpen, setIsOpen] = useState(false);
+    const [isFormUpdate, setIsFormUpdate] = useState(false);
+    const [idToUpdate, setIdToUpdate] = useState();
     const [formData, setFormData] = useState({
         title: '',
         author: '',
         desc: '',
         year: 0,
         categoryId: '',
-        price: '',
+        price: 0,
         image: '',
     });
 
@@ -60,12 +62,30 @@ function Products() {
         setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    const openModal = () => {
+    const openModal = (product) => {
+        if (product) {
+            const { title, author, desc, year, categoryId, price, image } = product;
+            setFormData({ title, author, desc, year, categoryId, price, image });
+            setIsFormUpdate(true);
+            setIdToUpdate(product._id);
+        } else {
+            setFormData({
+                title: '',
+                author: '',
+                desc: '',
+                year: 0,
+                categoryId: '',
+                price: 0,
+                image: '',
+            });
+        }
+
         setIsOpen(true);
     };
 
     const handleCancel = () => {
         setIsOpen(false);
+        setIsFormUpdate(false);
     };
 
     const handleAdd = async (e) => {
@@ -80,12 +100,34 @@ function Products() {
         }
     };
 
+    const handleDelete = async (id) => {
+        const res = await productService.deleteProduct(id);
+        if (res.status === 200) {
+            toast.success(res.data);
+            window.location.reload();
+        } else {
+            toast.error('Something went wrong!');
+        }
+    };
+
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+
+        const res = await productService.updateProduct(idToUpdate, formData);
+        if (res.status === 200) {
+            toast.success('Update product successfully');
+            setIsOpen(false);
+        } else {
+            toast.error('Something went wrong!');
+        }
+    };
+
     return (
         <>
             <div className={cx('wrapper')}>
                 <div className={cx('wrap-title')}>
                     <h1>List Products</h1>
-                    <button onClick={openModal}>Add</button>
+                    <button onClick={() => openModal()}>Add</button>
                 </div>
                 <table className={cx('customers')}>
                     <thead>
@@ -107,8 +149,12 @@ function Products() {
                                 </td>
                                 <td>{product.price}đ</td>
                                 <td>
-                                    <button className={cx('update-btn')}>Update</button>{' '}
-                                    <button className={cx('delete-btn')}>Delete</button>{' '}
+                                    <button className={cx('update-btn')} onClick={() => openModal(product)}>
+                                        Update
+                                    </button>
+                                    <button className={cx('delete-btn')} onClick={() => handleDelete(product._id)}>
+                                        Delete
+                                    </button>
                                 </td>
                             </tr>
                         ))}
@@ -116,8 +162,8 @@ function Products() {
                 </table>
             </div>
 
-            <Modal isOpen={modalIsOpen} style={customStyles} ariaHideApp={false} contentLabel="Add Products">
-                <h2 className={cx('heading')}>Add Products</h2>
+            <Modal isOpen={modalIsOpen} style={customStyles} ariaHideApp={false}>
+                <h2 className={cx('heading')}>{isFormUpdate ? 'Update Product' : 'Add Product'}</h2>
                 <form>
                     <div className={cx('form-group')}>
                         <label htmlFor="title">Title</label>
@@ -157,7 +203,11 @@ function Products() {
                         <select name="categoryId" id="category" onChange={handleInputChange}>
                             <option value="">Select category</option>
                             {categories.map((category) => (
-                                <option key={category._id} value={category._id}>
+                                <option
+                                    key={category._id}
+                                    value={category._id}
+                                    selected={category._id === formData.categoryId}
+                                >
                                     {category.name}
                                 </option>
                             ))}
@@ -177,7 +227,7 @@ function Products() {
                     <div className={cx('form-group')}>
                         <label htmlFor="price">Price</label>
                         <input
-                            type="text"
+                            type="number"
                             id="price"
                             name="price"
                             value={formData.price}
@@ -200,9 +250,15 @@ function Products() {
                         <button className={cx('cancel-btn')} onClick={handleCancel}>
                             Cancel
                         </button>
-                        <button className={cx('add-btn')} onClick={handleAdd}>
-                            Add
-                        </button>
+                        {isFormUpdate ? (
+                            <button className={cx('add-btn')} onClick={handleUpdate}>
+                                Update
+                            </button>
+                        ) : (
+                            <button className={cx('add-btn')} onClick={handleAdd}>
+                                Add
+                            </button>
+                        )}
                     </div>
                 </form>
             </Modal>

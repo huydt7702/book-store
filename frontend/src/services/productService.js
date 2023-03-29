@@ -17,3 +17,21 @@ export const addProduct = async (formData) => {
         console.log(error);
     }
 };
+
+export const deleteProduct = async (id) => {
+    try {
+        const res = await httpRequest.deleteOne(`v1/product/delete/${id}`);
+        return res;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const updateProduct = async (id, formData) => {
+    try {
+        const res = await httpRequest.update(`v1/product/update/${id}`, formData);
+        return res;
+    } catch (error) {
+        console.log(error);
+    }
+};

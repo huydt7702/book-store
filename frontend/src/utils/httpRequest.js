@@ -14,4 +14,14 @@ export const post = async (path, options = {}) => {
     return response;
 };
 
+export const deleteOne = async (path, options = {}) => {
+    const response = await httpRequest.delete(path, options);
+    return response;
+};
+
+export const update = async (path, formData) => {
+    const response = await httpRequest.put(path, formData);
+    return response;
+};
+
 export default httpRequest;
