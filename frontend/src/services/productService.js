@@ -8,3 +8,12 @@ export const getAllProducts = async () => {
         console.log(error);
     }
 };
+
+export const addProduct = async (formData) => {
+    try {
+        const res = await httpRequest.post('v1/product/add', formData);
+        return res;
+    } catch (error) {
+        console.log(error);
+    }
+};
