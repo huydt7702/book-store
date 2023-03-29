@@ -51,6 +51,8 @@ export const getAllUsers = async (accessToken, dispatch, axiosJWT) => {
             headers: { token: `Bearer ${accessToken}` },
         });
         dispatch(getUsersSuccess(res.data));
+
+        return res;
     } catch (err) {
         dispatch(getUsersFailed());
     }
