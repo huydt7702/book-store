@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 import { createAxios } from '~/createInstance';
-import { getAllUsers } from '~/redux/apiRequest';
-import { getUsersSuccess } from '~/redux/userSlice';
+import { getAllUsers, deleteUser } from '~/redux/apiRequest';
+import { getUsersSuccess, deleteUsersSuccess } from '~/redux/userSlice';
 import styles from './Users.module.scss';
 
 const cx = classNames.bind(styles);
@@ -16,11 +16,12 @@ function Users() {
 
     const me = useSelector((state) => state.auth.login.currentUser);
     const accessToken = me?.accessToken;
-    let axiosJWT = createAxios(me, dispatch, getUsersSuccess);
+    let axiosJWTGetAllUsers = createAxios(me, dispatch, getUsersSuccess);
+    let axiosJWTDeleteUser = createAxios(me, dispatch, deleteUsersSuccess);
 
     useEffect(() => {
         (async () => {
-            const res = await getAllUsers(accessToken, dispatch, axiosJWT);
+            const res = await getAllUsers(accessToken, dispatch, axiosJWTGetAllUsers);
             if (res.status === 200) {
                 setUsers(res.data);
             } else {
@@ -29,6 +30,17 @@ function Users() {
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    const handleDelete = async (id) => {
+        const res = await deleteUser(accessToken, dispatch, id, axiosJWTDeleteUser);
+
+        if (res.status === 200) {
+            toast.success(res.data);
+            window.location.reload();
+        } else {
+            toast.error('Delete user failed!');
+        }
+    };
 
     return (
         <div className={cx('wrapper')}>
@@ -48,7 +60,13 @@ function Users() {
                             <td>{user.username}</td>
                             <td>{user.email}</td>
                             <td>{user.isAdmin ? 'Admin' : 'User'}</td>
-                            <td>{user.isAdmin || <button className={cx('delete-btn')}>Delete</button>}</td>
+                            <td>
+                                {user.isAdmin || (
+                                    <button className={cx('delete-btn')} onClick={() => handleDelete(user._id)}>
+                                        Delete
+                                    </button>
+                                )}
+                            </td>
                         </tr>
                     ))}
                 </tbody>

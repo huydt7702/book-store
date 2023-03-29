@@ -65,6 +65,8 @@ export const deleteUser = async (accessToken, dispatch, id, axiosJWT) => {
             headers: { token: `Bearer ${accessToken}` },
         });
         dispatch(deleteUsersSuccess(res.data));
+
+        return res;
     } catch (err) {
         dispatch(deleteUserFailed(err.response.data));
     }
