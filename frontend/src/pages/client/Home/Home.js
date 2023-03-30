@@ -1,5 +1,6 @@
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import images from '~/assets/images';
 import * as productService from '~/services/productService';
@@ -52,9 +53,9 @@ function Home() {
                                     />
                                 </div>
                                 <h3 className={cx('product__panel-heading')}>
-                                    <a href="/" className={cx('product__panel-link')}>
+                                    <Link to={`/product/${product.slug}`} className={cx('product__panel-link')}>
                                         {product.title}
-                                    </a>
+                                    </Link>
                                 </h3>
                                 <div className={cx('product__panel-price')}>
                                     <span className={cx('product__panel-price-current')}>{product.price}đ</span>

@@ -14,4 +14,7 @@ router.delete("/delete/:id", productController.deleteProduct);
 //UPDATE PRODUCT
 router.put("/update/:id", productController.updateProduct);
 
+//GET PRODUCT BY SLUG
+router.get("/:slug", productController.getProductBySlug);
+
 module.exports = router;

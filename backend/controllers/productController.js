@@ -88,6 +88,24 @@ const productController = {
             });
         }
     },
+
+    //GET PRODUCT BY SLUG
+    getProductBySlug: async (req, res) => {
+        try {
+            const { slug } = req.params;
+            const data = await Product.findOne({ slug });
+            res.status(200).json({
+                success: true,
+                message: "Success",
+                data,
+            });
+        } catch (err) {
+            res.status(400).json({
+                success: false,
+                message: `Error : ${err}`,
+            });
+        }
+    },
 };
 
 module.exports = productController;

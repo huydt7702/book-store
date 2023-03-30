@@ -9,6 +9,15 @@ export const getAllProducts = async () => {
     }
 };
 
+export const getProductBySlug = async (slug) => {
+    try {
+        const res = await httpRequest.get(`v1/product/${slug}`);
+        return res;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export const addProduct = async (formData) => {
     try {
         const res = await httpRequest.post('v1/product/add', formData);
