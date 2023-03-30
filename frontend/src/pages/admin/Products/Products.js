@@ -83,9 +83,10 @@ function Products() {
         setIsOpen(true);
     };
 
-    const handleCancel = () => {
+    const handleCancel = (e) => {
+        e.preventDefault();
+
         setIsOpen(false);
-        setIsFormUpdate(false);
     };
 
     const handleAdd = async (e) => {
@@ -101,12 +102,17 @@ function Products() {
     };
 
     const handleDelete = async (id) => {
-        const res = await productService.deleteProduct(id);
-        if (res.status === 200) {
-            toast.success(res.data);
-            window.location.reload();
-        } else {
-            toast.error('Something went wrong!');
+        // eslint-disable-next-line no-restricted-globals
+        if (confirm('Are you sure you want to delete this product?')) {
+            const res = await productService.deleteProduct(id);
+            if (res.status === 200) {
+                const newProducts = products.filter((product) => product._id !== id);
+                setProducts(newProducts);
+
+                toast.success(res.data);
+            } else {
+                toast.error('Something went wrong!');
+            }
         }
     };
 
@@ -127,7 +133,14 @@ function Products() {
             <div className={cx('wrapper')}>
                 <div className={cx('wrap-title')}>
                     <h1>List Products</h1>
-                    <button onClick={() => openModal()}>Add</button>
+                    <button
+                        onClick={() => {
+                            openModal();
+                            setIsFormUpdate(false);
+                        }}
+                    >
+                        Add
+                    </button>
                 </div>
                 <table className={cx('customers')}>
                     <thead>
@@ -162,7 +175,7 @@ function Products() {
                 </table>
             </div>
 
-            <Modal isOpen={modalIsOpen} style={customStyles} ariaHideApp={false}>
+            <Modal isOpen={modalIsOpen} style={customStyles} ariaHideApp={false} closeTimeoutMS={200}>
                 <h2 className={cx('heading')}>{isFormUpdate ? 'Update Product' : 'Add Product'}</h2>
                 <form>
                     <div className={cx('form-group')}>
