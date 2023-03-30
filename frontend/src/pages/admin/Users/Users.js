@@ -32,13 +32,17 @@ function Users() {
     }, []);
 
     const handleDelete = async (id) => {
-        const res = await deleteUser(accessToken, dispatch, id, axiosJWTDeleteUser);
+        // eslint-disable-next-line no-restricted-globals
+        if (confirm('Are you sure you want to delete this user?')) {
+            const res = await deleteUser(accessToken, dispatch, id, axiosJWTDeleteUser);
+            if (res.status === 200) {
+                const newUsers = users.filter((user) => user._id !== id);
+                setUsers(newUsers);
 
-        if (res.status === 200) {
-            toast.success(res.data);
-            window.location.reload();
-        } else {
-            toast.error('Delete user failed!');
+                toast.success(res.data);
+            } else {
+                toast.error('Delete user failed!');
+            }
         }
     };
 
