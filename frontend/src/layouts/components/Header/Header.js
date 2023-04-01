@@ -1,11 +1,12 @@
 import classNames from 'classnames/bind';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import images from '~/assets/images';
 import { BarsIcon, CartIcon, SearchIcon } from '~/components/Icons';
+import config from '~/config';
 import { createAxios } from '~/createInstance';
 import { logOut } from '~/redux/apiRequest';
 import { logOutSuccess } from '~/redux/authSlice';
@@ -136,9 +137,9 @@ function Header() {
                         <div className={cx('header__nav col-lg-9', 'col-md-0', 'col-sm-0')}>
                             <ul className={cx('header__nav-list')}>
                                 <li className={cx('header__nav-item')}>
-                                    <a href="index.html" className={cx('header__nav-link')}>
+                                    <Link to={config.routes.home} className={cx('header__nav-link')}>
                                         Trang chủ
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li className={cx('header__nav-item')}>
                                     <a href="category.html" className={cx('header__nav-link')}>

@@ -1,4 +1,4 @@
-import { faStar, faStarHalfAlt } from '@fortawesome/free-solid-svg-icons';
+import { faStar, faStarHalfAlt, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
@@ -174,6 +174,9 @@ function ProductDetail() {
                             </div>
                         </div>
                         <p className={cx('review')}>{comment.review}</p>
+                        <span className={cx('menu-icon')}>
+                            <FontAwesomeIcon icon={faEllipsisVertical} />
+                        </span>
                     </div>
                 ))}
                 <form action="" className={cx('comment')} onSubmit={handleAddComment}>

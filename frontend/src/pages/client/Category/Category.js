@@ -36,6 +36,9 @@ function Category() {
                 </div>
 
                 <div className={cx('row', 'product__panel')}>
+                    {productsByCategoryId.length === 0 && (
+                        <p style={{ width: '100%', textAlign: 'center' }}>Hiện chưa có sản phẩm nào ở danh mục này.</p>
+                    )}
                     {productsByCategoryId.map((product) => (
                         <div
                             key={product._id}
