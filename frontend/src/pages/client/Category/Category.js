@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 
 import * as productService from '~/services/productService';
 import styles from './Category.module.scss';
@@ -51,9 +51,9 @@ function Category() {
                                     />
                                 </div>
                                 <h3 className={cx('product__panel-heading')}>
-                                    <a href="/" className={cx('product__panel-link')}>
+                                    <Link to={`/product/${product.slug}`} className={cx('product__panel-link')}>
                                         {product.title}
-                                    </a>
+                                    </Link>
                                 </h3>
                                 <div className={cx('product__panel-price')}>
                                     <span className={cx('product__panel-price-current')}>{product.price}đ</span>

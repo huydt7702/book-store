@@ -1,0 +1,222 @@
+.wrapper {
+    margin-top: 30px;
+}
+
+.product {
+    display: flex;
+
+    .product-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+    }
+
+    .product-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 30px;
+    }
+}
+
+.wrap-rating {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+
+    .stars {
+        color: rgb(250 175 0);
+    }
+
+    .review-count {
+        margin-top: 0;
+        margin-left: 10px;
+    }
+}
+
+.rating {
+    color: rgb(255 102 81 / 1);
+    font-size: 2rem;
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+
+    span {
+        margin-top: 10px;
+    }
+
+    .price {
+        font-size: 24px;
+        font-weight: 600;
+        color: rgb(201, 33, 39);
+    }
+
+    .quantity {
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 50px;
+    }
+}
+
+.add-to-cart-btn {
+    cursor: pointer;
+    padding: 0px 25px;
+    line-height: 1;
+    height: 50px;
+    color: rgb(255, 255, 255);
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    display: block;
+    margin-top: 60px;
+    outline: none;
+    background-image: linear-gradient(to right bottom, rgb(255, 102, 81), rgb(164, 217, 108));
+}
+
+.quantity-wrapper {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    gap: 30px;
+    padding: 5px 15px;
+    border-radius: 8px;
+    border: 1px solid gray;
+    max-width: 200px;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+
+    .quantity-btn {
+        font-size: 24px;
+        font-weight: 600;
+        color: gray;
+        background-color: transparent;
+        outline: none;
+        cursor: pointer;
+    }
+
+    .quantity-value {
+        margin-top: 0;
+    }
+}
+
+.heading {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.wrap-desc {
+    margin-top: 30px;
+
+    .desc {
+        font-size: 16px;
+    }
+}
+
+.wrap-reviews {
+    margin-top: 30px;
+
+    .reviews {
+        margin-bottom: 20px;
+    }
+
+    .wrap-user {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+
+        .name {
+            margin-bottom: 0;
+            font-weight: 500;
+            display: flex;
+            flex-direction: column;
+        }
+    }
+
+    .user-image {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 100%;
+    }
+
+    .review {
+        font-size: 1.6rem;
+        margin-top: 8px;
+    }
+
+    .ratings {
+        margin-right: 10px;
+    }
+}
+
+.comment {
+    margin-top: 40px;
+
+    .title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: rgb(102 102 102);
+    }
+
+    .stars {
+        display: flex;
+        margin-bottom: 20px;
+
+        .active {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+
+            &:hover {
+                background-color: var(--primary-color);
+                color: var(--white-color);
+            }
+        }
+
+        button {
+            background-color: transparent;
+            padding: 4px 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            margin-right: 4px;
+            cursor: pointer;
+            outline: none;
+
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.05);
+            }
+        }
+    }
+
+    textarea {
+        outline: none;
+        border: 1px solid rgb(51, 51, 51);
+        padding: 15px;
+        width: 100%;
+    }
+
+    .comment-btn {
+        cursor: pointer;
+        padding: 0px 25px;
+        line-height: 1;
+        height: 66px;
+        color: rgb(255, 255, 255);
+        width: 100%;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: 600;
+        display: block;
+        background-image: linear-gradient(to right bottom, rgb(255, 102, 81), rgb(164, 217, 108));
+        max-width: 300px;
+        margin: 20px auto 20px;
+        outline: none;
+    }
+}

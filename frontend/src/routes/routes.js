@@ -2,6 +2,7 @@ import config from '~/config';
 
 // Layouts
 import AdminDashboard from '~/layouts/AdminDashboard';
+import { HeaderOnly } from '~/layouts';
 
 // Pages
 import Home from '~/pages/client/Home';
@@ -19,7 +20,7 @@ const publicRoutes = [
     { path: config.routes.users, component: Users, layout: AdminDashboard },
     { path: config.routes.products, component: Products, layout: AdminDashboard },
     { path: config.routes.categories, component: Categories, layout: AdminDashboard },
-    { path: config.routes.product, component: ProductDetail },
+    { path: config.routes.product, component: ProductDetail, layout: HeaderOnly },
     { path: config.routes.auth, component: Auth, layout: null },
 ];
 

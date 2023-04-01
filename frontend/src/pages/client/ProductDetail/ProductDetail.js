@@ -1,16 +1,177 @@
 import classNames from 'classnames/bind';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import styles from './ProductDetail.module.scss';
+import * as productService from '~/services/productService';
+import * as commentService from '~/services/commentService';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar, faStarHalfAlt } from '@fortawesome/free-solid-svg-icons';
 
 const cx = classNames.bind(styles);
 
+const stars = [
+    {
+        id: 1,
+        title: '1 Sao',
+    },
+    {
+        id: 2,
+        title: '2 Sao',
+    },
+    {
+        id: 3,
+        title: '3 Sao',
+    },
+    {
+        id: 4,
+        title: '4 Sao',
+    },
+    {
+        id: 5,
+        title: '5 Sao',
+    },
+];
+
 function ProductDetail() {
     const location = useLocation();
-    const str = location.pathname;
-    const result = str.split('/').pop();
-    console.log(result);
+    const [product, setProduct] = useState({});
+    const [comments, setComments] = useState([]);
+    const [starCount, setStarCount] = useState(5);
 
-    return <div className={cx('wrapper')}>Product Detail</div>;
+    useEffect(() => {
+        (async () => {
+            const path = location.pathname;
+            const slug = path.split('/').pop();
+
+            const res = await productService.getProductBySlug(slug);
+            setProduct(res.data);
+        })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        (async () => {
+            const res = await commentService.getAllCommentOfProductId(product._id);
+            setComments(res.data);
+        })();
+    }, [product._id]);
+
+    const handleSelectStar = (star) => {
+        setStarCount(star);
+    };
+
+    const handleAddComment = (e) => {
+        e.preventDefault();
+    };
+
+    const formatNumber = (price) => {
+        return price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    };
+
+    const StarRating = ({ averageScore, maxRating }) => {
+        const fullStars = Math.round(averageScore);
+        const halfStar = averageScore - fullStars >= 0.5;
+        const emptyStars = maxRating - fullStars - (halfStar ? 1 : 0);
+
+        const stars = [];
+        for (let i = 0; i < fullStars; i++) {
+            stars.push(<FontAwesomeIcon icon={faStar} key={`star-${i}`} />);
+        }
+        if (halfStar) {
+            stars.push(<FontAwesomeIcon icon={faStarHalfAlt} key="half-star" />);
+        }
+        for (let i = 0; i < emptyStars; i++) {
+            stars.push(<FontAwesomeIcon icon={faStar} key={`empty-star-${i}`} opacity="0.3" />);
+        }
+
+        return <div className={cx('stars')}>{stars}</div>;
+    };
+
+    const renderDate = (data) => {
+        const date = new Date(data);
+        const formattedDate = `${date.getUTCDate()}/${
+            date.getUTCMonth() + 1
+        }/${date.getUTCFullYear()} - Lúc ${date.getUTCHours()} giờ ${date.getUTCMinutes()} phút`;
+
+        return formattedDate;
+    };
+
+    return (
+        <div className={cx('wrapper')}>
+            <div className={cx('product')}>
+                <div className={cx('col-lg-5')}>
+                    <img className={cx('product-image')} src={product.image} alt={product.title} />
+                </div>
+                <div className={cx('col-lg-7')}>
+                    <h3 className={cx('product-title')}>{product.title}</h3>
+                    <div className={cx('product-info')}>
+                        <span>Tác giả: {product.author}</span>
+                        <span>Năm xuất bản: {product.year}</span>
+                        <div className={cx('wrap-rating')}>
+                            <StarRating averageScore={product.average_score} maxRating={5} />
+                            <span className={cx('review-count')}>({product.review_count} đánh giá)</span>
+                        </div>
+                        <span>
+                            Giá: <span className={cx('price')}>{formatNumber(product.price)}đ</span>
+                        </span>
+                        <span className={cx('quantity')}>
+                            Số lượng:
+                            <div className={cx('quantity-wrapper')}>
+                                <button className={cx('quantity-btn')}>-</button>
+                                <span className={cx('quantity-value')}>1</span>
+                                <button className={cx('quantity-btn')}>+</button>
+                            </div>
+                        </span>
+                    </div>
+                    <div>
+                        <button className={cx('add-to-cart-btn')}>Thêm Vào Giỏ Hàng</button>
+                    </div>
+                </div>
+            </div>
+            <div className={cx('wrap-desc', 'col-lg-12')}>
+                <h3 className={cx('heading')}>Mô tả sản phẩm</h3>
+                <p className={cx('desc')}>{product.desc}</p>
+            </div>
+            <div className={cx('wrap-reviews', 'col-lg-12')}>
+                <h3 className={cx('heading')}>Đánh giá sản phẩm</h3>
+                {comments.map((comment) => (
+                    <div key={comment._id} className={cx('reviews')}>
+                        <div className={cx('wrap-user')}>
+                            <img className={cx('user-image')} src={comment.userImage} alt={comment.username} />
+                            <div className={cx('name')}>
+                                <span>{comment.username}</span>
+                                <div className={cx('wrap-rating')}>
+                                    <div className={cx('ratings')}>
+                                        <StarRating averageScore={comment.rating} maxRating={5} />
+                                    </div>
+                                    <span>{renderDate(comment.updatedAt)}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p className={cx('review')}>{comment.review}</p>
+                    </div>
+                ))}
+                <form action="" className={cx('comment')} onSubmit={handleAddComment}>
+                    <h4 className={cx('title')}>Để lại đánh giá cho sản phẩm này</h4>
+                    <h3>Đánh giá sao *</h3>
+                    <div className={cx('stars')}>
+                        {stars.map((star) => (
+                            <button
+                                className={cx({ active: starCount === star.id })}
+                                key={star.id}
+                                onClick={() => handleSelectStar(star.id)}
+                            >
+                                {star.title}
+                            </button>
+                        ))}
+                    </div>
+                    <h3>Viết đánh giá cho sản phẩm này *</h3>
+                    <textarea name="" id="" rows="6"></textarea>
+                    <button className={cx('comment-btn')}>Bình luận</button>
+                </form>
+            </div>
+        </div>
+    );
 }
 
 export default ProductDetail;
