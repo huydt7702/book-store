@@ -1,11 +1,15 @@
+import { faStar, faStarHalfAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import styles from './ProductDetail.module.scss';
-import * as productService from '~/services/productService';
+
+import images from '~/assets/images';
 import * as commentService from '~/services/commentService';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar, faStarHalfAlt } from '@fortawesome/free-solid-svg-icons';
+import * as productService from '~/services/productService';
+import styles from './ProductDetail.module.scss';
+import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
@@ -37,6 +41,10 @@ function ProductDetail() {
     const [product, setProduct] = useState({});
     const [comments, setComments] = useState([]);
     const [starCount, setStarCount] = useState(5);
+    const [commentContent, setCommentContent] = useState('');
+    const [renderPage, setRenderPage] = useState(false);
+
+    const user = useSelector((state) => state.auth.login.currentUser);
 
     useEffect(() => {
         (async () => {
@@ -47,21 +55,37 @@ function ProductDetail() {
             setProduct(res.data);
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [renderPage]);
 
     useEffect(() => {
         (async () => {
             const res = await commentService.getAllCommentOfProductId(product._id);
             setComments(res.data);
         })();
-    }, [product._id]);
+    }, [product._id, renderPage]);
 
     const handleSelectStar = (star) => {
         setStarCount(star);
     };
 
-    const handleAddComment = (e) => {
+    const handleAddComment = async (e) => {
         e.preventDefault();
+
+        const formData = {
+            rating: starCount,
+            review: commentContent,
+            username: user.username,
+            userImage: images.noImage,
+            productId: product._id,
+        };
+
+        const res = await commentService.addComment(formData);
+        if (res?.status === 200) {
+            toast.success('Comment successfully');
+            setRenderPage(true);
+        } else {
+            toast.error('Something went wrong!');
+        }
     };
 
     const formatNumber = (price) => {
@@ -91,7 +115,7 @@ function ProductDetail() {
         const date = new Date(data);
         const formattedDate = `${date.getUTCDate()}/${
             date.getUTCMonth() + 1
-        }/${date.getUTCFullYear()} - Lúc ${date.getUTCHours()} giờ ${date.getUTCMinutes()} phút`;
+        }/${date.getUTCFullYear()} - Lúc ${date.getHours()} giờ ${date.getMinutes()} phút`;
 
         return formattedDate;
     };
@@ -134,6 +158,7 @@ function ProductDetail() {
             </div>
             <div className={cx('wrap-reviews', 'col-lg-12')}>
                 <h3 className={cx('heading')}>Đánh giá sản phẩm</h3>
+                {comments.length === 0 && <p>Chưa có đánh giá nào cho sản phẩm này.</p>}
                 {comments.map((comment) => (
                     <div key={comment._id} className={cx('reviews')}>
                         <div className={cx('wrap-user')}>
@@ -156,17 +181,17 @@ function ProductDetail() {
                     <h3>Đánh giá sao *</h3>
                     <div className={cx('stars')}>
                         {stars.map((star) => (
-                            <button
-                                className={cx({ active: starCount === star.id })}
+                            <div
+                                className={cx('star-btn', { active: starCount === star.id })}
                                 key={star.id}
                                 onClick={() => handleSelectStar(star.id)}
                             >
                                 {star.title}
-                            </button>
+                            </div>
                         ))}
                     </div>
                     <h3>Viết đánh giá cho sản phẩm này *</h3>
-                    <textarea name="" id="" rows="6"></textarea>
+                    <textarea rows="6" onChange={(e) => setCommentContent(e.target.value)}></textarea>
                     <button className={cx('comment-btn')}>Bình luận</button>
                 </form>
             </div>
