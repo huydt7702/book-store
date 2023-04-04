@@ -23,6 +23,10 @@ function Home() {
         fetchApi();
     }, []);
 
+    const formatNumber = (price) => {
+        return price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    };
+
     return (
         <section className={cx('bestselling')}>
             <div className={cx('container')}>
@@ -58,7 +62,9 @@ function Home() {
                                     </Link>
                                 </h3>
                                 <div className={cx('product__panel-price')}>
-                                    <span className={cx('product__panel-price-current')}>{product.price}đ</span>
+                                    <span className={cx('product__panel-price-current')}>
+                                        {formatNumber(product.price)}đ
+                                    </span>
                                 </div>
                             </div>
                         </div>

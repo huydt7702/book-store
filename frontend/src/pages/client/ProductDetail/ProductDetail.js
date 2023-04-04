@@ -45,17 +45,16 @@ function ProductDetail() {
     const [renderPage, setRenderPage] = useState(false);
 
     const user = useSelector((state) => state.auth.login.currentUser);
+    const path = location.pathname;
+    const slug = path.split('/').pop();
 
     useEffect(() => {
         (async () => {
-            const path = location.pathname;
-            const slug = path.split('/').pop();
-
             const res = await productService.getProductBySlug(slug);
             setProduct(res.data);
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [renderPage]);
+    }, [renderPage, slug]);
 
     useEffect(() => {
         (async () => {
