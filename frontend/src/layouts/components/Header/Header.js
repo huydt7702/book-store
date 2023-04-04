@@ -1,20 +1,28 @@
+import HeadlessTippy from '@tippyjs/react/headless';
 import classNames from 'classnames/bind';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import 'tippy.js/dist/tippy.css';
 
 import images from '~/assets/images';
 import { BarsIcon, CartIcon, SearchIcon } from '~/components/Icons';
 import config from '~/config';
 import { createAxios } from '~/createInstance';
+import { useDebounce } from '~/hooks';
 import { logOut } from '~/redux/apiRequest';
 import { logOutSuccess } from '~/redux/authSlice';
+import * as productService from '~/services/productService';
 import styles from './Header.module.scss';
 
 const cx = classNames.bind(styles);
 
 function Header() {
+    const [searchValue, setSearchValue] = useState('');
+    const [searchResult, setSearchResult] = useState([]);
+    const [showResult, setShowResult] = useState(false);
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -23,12 +31,34 @@ function Header() {
     const accessToken = user?.accessToken;
     let axiosJWT = createAxios(user, dispatch, logOutSuccess);
 
+    const debouncedValue = useDebounce(searchValue, 500);
+
     useEffect(() => {
         if (!user) {
-            navigate('/auth');
+            navigate(config.routes.auth);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        if (!debouncedValue.trim()) {
+            setSearchResult([]);
+            return;
+        }
+
+        const fetchApi = async () => {
+            const allProducts = await productService.getAllProducts();
+            const result = allProducts.filter((product) => {
+                const value = product.title.toLowerCase();
+
+                return value.includes(debouncedValue.toLowerCase());
+            });
+
+            setSearchResult(result);
+        };
+
+        fetchApi();
+    }, [debouncedValue]);
 
     const handleLogout = async () => {
         const data = await logOut(dispatch, id, navigate, accessToken, axiosJWT);
@@ -36,6 +66,18 @@ function Header() {
             toast.success('Logout successfully');
         } else {
             toast.error('Something went wrong!');
+        }
+    };
+
+    const handleHideResult = () => {
+        setShowResult(false);
+    };
+
+    const handleChange = (e) => {
+        const searchValue = e.target.value;
+
+        if (!searchValue.startsWith(' ')) {
+            setSearchValue(searchValue);
         }
     };
 
@@ -88,11 +130,40 @@ function Header() {
                         </div>
 
                         <div className={cx('col-lg-6', 'col-md-7', 'col-sm-0', 'header__search')}>
-                            <input
-                                type="text"
-                                className={cx('header__search-input')}
-                                placeholder="Tìm kiếm tại đây..."
-                            />
+                            <HeadlessTippy
+                                interactive
+                                visible={showResult && searchResult.length > 0}
+                                placement="top-start"
+                                render={(attrs) => (
+                                    <div className={cx('search-result')} tabIndex="-1" {...attrs}>
+                                        <div className={cx('search-result')}>
+                                            {searchResult.map((item) => (
+                                                <Link
+                                                    key={item._id}
+                                                    to={`/product/${item.slug}`}
+                                                    className={cx('search-item')}
+                                                >
+                                                    <img
+                                                        src={item.image}
+                                                        alt={item.title}
+                                                        className={cx('search-img')}
+                                                    />
+                                                    <h3 className={cx('search-title')}>{item.title}</h3>
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                                onClickOutside={handleHideResult}
+                            >
+                                <input
+                                    type="text"
+                                    className={cx('header__search-input')}
+                                    placeholder="Tìm kiếm tại đây..."
+                                    onChange={handleChange}
+                                    onFocus={() => setShowResult(true)}
+                                />
+                            </HeadlessTippy>
                             <button className={cx('header__search-btn')}>
                                 <div className={cx('header__search-icon-wrap')}>
                                     <i className={cx('header__search-icon')}>

@@ -60,6 +60,40 @@
 .header__search {
     display: flex;
     align-items: center;
+    position: relative;
+
+    .search-result {
+        background-color: #fff;
+        border-radius: 2px;
+        box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        width: 485px;
+    }
+
+    .search-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            text-decoration: none;
+        }
+    }
+
+    .search-img {
+        width: 30px;
+        height: 30px;
+        object-fit: cover;
+    }
+
+    .search-title {
+        margin-bottom: 0;
+        font-size: 16px;
+        font-weight: 400;
+    }
 }
 
 .header__search-select {
