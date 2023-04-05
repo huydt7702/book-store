@@ -5,6 +5,16 @@ const commentController = {
     //GET ALL COMMENTS
     getAllComments: async (req, res) => {
         try {
+            const data = await Comment.find();
+            res.status(200).json(data);
+        } catch (error) {
+            res.status(500).json(err);
+        }
+    },
+
+    //GET ALL COMMENTS BY PRODUCT ID
+    getAllCommentsByProductId: async (req, res) => {
+        try {
             const productId = req.params.productId;
             const data = await Comment.find({ productId });
 

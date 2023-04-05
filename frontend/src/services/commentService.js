@@ -1,6 +1,20 @@
 import config from '~/config';
 import { logOutSuccess } from '~/redux/authSlice';
 
+export const getAllComments = async (dispatch, navigate, accessToken, axiosJWT) => {
+    try {
+        const res = await axiosJWT.get(`/v1/comment`, {
+            headers: { token: `Bearer ${accessToken}` },
+        });
+
+        return res;
+    } catch (err) {
+        console.log(err);
+        dispatch(logOutSuccess());
+        navigate(config.routes.auth);
+    }
+};
+
 export const getAllCommentOfProductId = async (productId, dispatch, navigate, accessToken, axiosJWT) => {
     try {
         const res = await axiosJWT.get(`/v1/comment/${productId}`, {

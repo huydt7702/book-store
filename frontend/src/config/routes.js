@@ -6,6 +6,7 @@ const routes = {
     product: '/product/:slug',
     categories: '/categories',
     auth: '/auth',
+    comments: '/comments',
 };
 
 export default routes;
