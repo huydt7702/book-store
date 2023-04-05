@@ -22,7 +22,7 @@ function Users() {
     useEffect(() => {
         (async () => {
             const res = await getAllUsers(accessToken, dispatch, axiosJWTGetAllUsers);
-            if (res.status === 200) {
+            if (res?.status === 200) {
                 setUsers(res.data);
             } else {
                 toast.error('Get all users failed!');

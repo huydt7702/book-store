@@ -1,15 +1,17 @@
-import { faStar, faStarHalfAlt, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisVertical, faStar, faStarHalfAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import images from '~/assets/images';
+import { createAxios } from '~/createInstance';
+import { logOutSuccess } from '~/redux/authSlice';
 import * as commentService from '~/services/commentService';
 import * as productService from '~/services/productService';
 import styles from './ProductDetail.module.scss';
-import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
@@ -48,19 +50,32 @@ function ProductDetail() {
     const path = location.pathname;
     const slug = path.split('/').pop();
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const accessToken = user?.accessToken;
+    let axiosJWT = createAxios(user, dispatch, logOutSuccess);
+
     useEffect(() => {
         (async () => {
-            const res = await productService.getProductBySlug(slug);
-            setProduct(res.data);
+            const res = await productService.getProductBySlug(slug, dispatch, navigate, accessToken, axiosJWT);
+            setProduct(res.data.data);
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [renderPage, slug]);
 
     useEffect(() => {
         (async () => {
-            const res = await commentService.getAllCommentOfProductId(product._id);
-            setComments(res.data);
+            const res = await commentService.getAllCommentOfProductId(
+                product._id,
+                dispatch,
+                navigate,
+                accessToken,
+                axiosJWT,
+            );
+            setComments(res.data.data);
         })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [product._id, renderPage]);
 
     const handleSelectStar = (star) => {
@@ -78,10 +93,10 @@ function ProductDetail() {
             productId: product._id,
         };
 
-        const res = await commentService.addComment(formData);
+        const res = await commentService.addComment(formData, accessToken, axiosJWT);
         if (res?.status === 200) {
             toast.success('Comment successfully');
-            setRenderPage(true);
+            setRenderPage(!renderPage);
         } else {
             toast.error('Something went wrong!');
         }

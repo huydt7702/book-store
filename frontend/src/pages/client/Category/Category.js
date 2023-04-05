@@ -1,7 +1,10 @@
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { createAxios } from '~/createInstance';
+import { logOutSuccess } from '~/redux/authSlice';
 import * as productService from '~/services/productService';
 import styles from './Category.module.scss';
 
@@ -13,17 +16,23 @@ function Category() {
     const [searchParams, setSearchParams] = useSearchParams();
     const categoryId = searchParams.get('id');
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const user = useSelector((state) => state.auth.login.currentUser);
+    const accessToken = user?.accessToken;
+    let axiosJWT = createAxios(user, dispatch, logOutSuccess);
+
     useEffect(() => {
         const fetchApi = async () => {
-            // setLoading(true);
-            const allProducts = await productService.getAllProducts();
-            const result = allProducts.filter((product) => product.categoryId === categoryId);
+            const res = await productService.getAllProducts(dispatch, navigate, accessToken, axiosJWT);
+            const result = res.data.filter((product) => product.categoryId === categoryId);
 
             setProductsByCategoryId(result);
-            // setLoading(false);
         };
 
         fetchApi();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [categoryId]);
 
     return (

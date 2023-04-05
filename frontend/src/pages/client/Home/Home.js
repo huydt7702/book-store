@@ -1,8 +1,11 @@
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
+import { useDispatch, useSelector } from 'react-redux';
 import images from '~/assets/images';
+import { createAxios } from '~/createInstance';
+import { logOutSuccess } from '~/redux/authSlice';
 import * as productService from '~/services/productService';
 import styles from './Home.module.scss';
 
@@ -10,17 +13,21 @@ const cx = classNames.bind(styles);
 
 function Home() {
     const [products, setProducts] = useState([]);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const user = useSelector((state) => state.auth.login.currentUser);
+    const accessToken = user?.accessToken;
+    let axiosJWT = createAxios(user, dispatch, logOutSuccess);
 
     useEffect(() => {
         const fetchApi = async () => {
-            // setLoading(true);
-            const result = await productService.getAllProducts();
-
-            setProducts(result);
-            // setLoading(false);
+            const result = await productService.getAllProducts(dispatch, navigate, accessToken, axiosJWT);
+            setProducts(result.data);
         };
 
         fetchApi();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const formatNumber = (price) => {

@@ -47,8 +47,8 @@ function Header() {
         }
 
         const fetchApi = async () => {
-            const allProducts = await productService.getAllProducts();
-            const result = allProducts.filter((product) => {
+            const res = await productService.getAllProducts(dispatch, navigate, accessToken, axiosJWT);
+            const result = res.data.filter((product) => {
                 const value = product.title.toLowerCase();
 
                 return value.includes(debouncedValue.toLowerCase());
@@ -58,6 +58,7 @@ function Header() {
         };
 
         fetchApi();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [debouncedValue]);
 
     const handleLogout = async () => {

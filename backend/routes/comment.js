@@ -4,12 +4,12 @@ const { verifyToken, verifyTokenAndAdmin, verifyTokenAndUserAuthorization } = re
 const router = require("express").Router();
 
 //ADD COMMENT
-router.post("/add", commentController.addComment);
+router.post("/add", verifyToken, commentController.addComment);
 
 //GET ALL COMMENTS
-router.get("/:productId", commentController.getAllComments);
+router.get("/:productId", verifyToken, commentController.getAllComments);
 
 //DELETE COMMENT
-router.delete("/delete/:id", commentController.deleteComment);
+router.delete("/delete/:id", verifyTokenAndAdmin, commentController.deleteComment);
 
 module.exports = router;

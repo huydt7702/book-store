@@ -3,6 +3,10 @@ import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { createAxios } from '~/createInstance';
+import { logOutSuccess } from '~/redux/authSlice';
 import * as categoryService from '~/services/categoryService';
 import styles from './Categories.module.scss';
 
@@ -27,11 +31,19 @@ function Categories() {
     const [idToUpdate, setIdToUpdate] = useState();
     const [categoryName, setCategoryName] = useState('');
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const user = useSelector((state) => state.auth.login.currentUser);
+    const accessToken = user?.accessToken;
+    let axiosJWT = createAxios(user, dispatch, logOutSuccess);
+
     useEffect(() => {
         (async () => {
-            const listCategories = await categoryService.getAllCategories();
-            setCategories(listCategories);
+            const res = await categoryService.getAllCategories(dispatch, navigate, accessToken, axiosJWT);
+            setCategories(res.data);
         })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [modalIsOpen]);
 
     const handleInputChange = (e) => {
@@ -59,8 +71,8 @@ function Categories() {
     const handleAdd = async (e) => {
         e.preventDefault();
 
-        const res = await categoryService.addCategory({ name: categoryName });
-        if (res.status === 200) {
+        const res = await categoryService.addCategory({ name: categoryName }, accessToken, axiosJWT);
+        if (res?.status === 200) {
             toast.success('Add category successfully');
             setIsOpen(false);
         } else {
@@ -71,8 +83,8 @@ function Categories() {
     const handleDelete = async (id) => {
         // eslint-disable-next-line no-restricted-globals
         if (confirm('Are you sure you want to delete this category?')) {
-            const res = await categoryService.deleteCategory(id);
-            if (res.status === 200) {
+            const res = await categoryService.deleteCategory(id, accessToken, axiosJWT);
+            if (res?.status === 200) {
                 const newCategories = categories.filter((category) => category._id !== id);
                 setCategories(newCategories);
 
@@ -86,8 +98,8 @@ function Categories() {
     const handleUpdate = async (e) => {
         e.preventDefault();
 
-        const res = await categoryService.updateCategory(idToUpdate, { name: categoryName });
-        if (res.status === 200) {
+        const res = await categoryService.updateCategory(idToUpdate, { name: categoryName }, accessToken, axiosJWT);
+        if (res?.status === 200) {
             toast.success('Update category successfully');
             setIsOpen(false);
         } else {

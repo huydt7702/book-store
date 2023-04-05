@@ -3,15 +3,15 @@ const { verifyToken, verifyTokenAndAdmin, verifyTokenAndUserAuthorization } = re
 
 const router = require("express").Router();
 //GET ALL CATEGORIES
-router.get("/", cateController.getAllCategories);
+router.get("/", verifyToken, cateController.getAllCategories);
 
 //ADD CATEGORY
-router.post("/add", cateController.addCategory);
+router.post("/add", verifyTokenAndAdmin, cateController.addCategory);
 
 //DELETE CATEGORY
-router.delete("/delete/:id", cateController.deleteCategory);
+router.delete("/delete/:id", verifyTokenAndAdmin, cateController.deleteCategory);
 
 //UPDATE CATEGORY
-router.put("/update/:id", cateController.updateCategory);
+router.put("/update/:id", verifyTokenAndAdmin, cateController.updateCategory);
 
 module.exports = router;

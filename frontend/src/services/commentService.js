@@ -1,28 +1,40 @@
-import * as httpRequest from '~/utils/httpRequest';
+import config from '~/config';
+import { logOutSuccess } from '~/redux/authSlice';
 
-export const getAllCommentOfProductId = async (productId) => {
+export const getAllCommentOfProductId = async (productId, dispatch, navigate, accessToken, axiosJWT) => {
     try {
-        const res = await httpRequest.get(`v1/comment/${productId}`);
+        const res = await axiosJWT.get(`/v1/comment/${productId}`, {
+            headers: { token: `Bearer ${accessToken}` },
+        });
+
         return res;
-    } catch (error) {
-        console.log(error);
+    } catch (err) {
+        console.log(err);
+        dispatch(logOutSuccess());
+        navigate(config.routes.auth);
     }
 };
 
-export const addComment = async (formData) => {
+export const addComment = async (formData, accessToken, axiosJWT) => {
     try {
-        const res = await httpRequest.post('v1/comment/add', formData);
+        const res = await axiosJWT.post(`/v1/comment/add`, formData, {
+            headers: { token: `Bearer ${accessToken}` },
+        });
+
         return res;
-    } catch (error) {
-        console.log(error);
+    } catch (err) {
+        console.log(err);
     }
 };
 
-export const deleteComment = async (id) => {
+export const deleteComment = async (id, accessToken, axiosJWT) => {
     try {
-        const res = await httpRequest.deleteOne(`v1/comment/delete/${id}`);
+        const res = await axiosJWT.delete(`/v1/comment/delete/${id}`, {
+            headers: { token: `Bearer ${accessToken}` },
+        });
+
         return res;
-    } catch (error) {
-        console.log(error);
+    } catch (err) {
+        console.log(err);
     }
 };

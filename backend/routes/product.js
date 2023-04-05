@@ -3,18 +3,18 @@ const { verifyToken, verifyTokenAndAdmin, verifyTokenAndUserAuthorization } = re
 
 const router = require("express").Router();
 //GET ALL PRODUCTS
-router.get("/", productController.getAllProducts);
+router.get("/", verifyToken, productController.getAllProducts);
 
 //ADD PRODUCT
-router.post("/add", productController.addProduct);
+router.post("/add", verifyTokenAndAdmin, productController.addProduct);
 
 //DELETE PRODUCT
-router.delete("/delete/:id", productController.deleteProduct);
+router.delete("/delete/:id", verifyTokenAndAdmin, productController.deleteProduct);
 
 //UPDATE PRODUCT
-router.put("/update/:id", productController.updateProduct);
+router.put("/update/:id", verifyTokenAndAdmin, productController.updateProduct);
 
 //GET PRODUCT BY SLUG
-router.get("/:slug", productController.getProductBySlug);
+router.get("/:slug", verifyToken, productController.getProductBySlug);
 
 module.exports = router;

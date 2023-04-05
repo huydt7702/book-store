@@ -3,8 +3,12 @@ import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
 
-import * as productService from '~/services/productService';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { createAxios } from '~/createInstance';
+import { logOutSuccess } from '~/redux/authSlice';
 import * as categoryService from '~/services/categoryService';
+import * as productService from '~/services/productService';
 import styles from './Products.module.scss';
 
 const cx = classNames.bind(styles);
@@ -37,20 +41,29 @@ function Products() {
         image: '',
     });
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const user = useSelector((state) => state.auth.login.currentUser);
+    const accessToken = user?.accessToken;
+    let axiosJWT = createAxios(user, dispatch, logOutSuccess);
+
     useEffect(() => {
         const fetchApi = async () => {
-            const result = await productService.getAllProducts();
-            setProducts(result);
+            const result = await productService.getAllProducts(dispatch, navigate, accessToken, axiosJWT);
+            setProducts(result.data);
         };
 
         fetchApi();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [modalIsOpen]);
 
     useEffect(() => {
         (async () => {
-            const listCategories = await categoryService.getAllCategories();
-            setCategories(listCategories);
+            const res = await categoryService.getAllCategories(dispatch, navigate, accessToken, axiosJWT);
+            setCategories(res.data);
         })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const getCategoryName = (categoryId) => {
@@ -92,8 +105,8 @@ function Products() {
     const handleAdd = async (e) => {
         e.preventDefault();
 
-        const res = await productService.addProduct(formData);
-        if (res.status === 200) {
+        const res = await productService.addProduct(formData, accessToken, axiosJWT);
+        if (res?.status === 200) {
             toast.success('Add product successfully');
             setIsOpen(false);
         } else {
@@ -104,8 +117,8 @@ function Products() {
     const handleDelete = async (id) => {
         // eslint-disable-next-line no-restricted-globals
         if (confirm('Are you sure you want to delete this product?')) {
-            const res = await productService.deleteProduct(id);
-            if (res.status === 200) {
+            const res = await productService.deleteProduct(id, accessToken, axiosJWT);
+            if (res?.status === 200) {
                 const newProducts = products.filter((product) => product._id !== id);
                 setProducts(newProducts);
 
@@ -119,8 +132,8 @@ function Products() {
     const handleUpdate = async (e) => {
         e.preventDefault();
 
-        const res = await productService.updateProduct(idToUpdate, formData);
-        if (res.status === 200) {
+        const res = await productService.updateProduct(idToUpdate, formData, accessToken, axiosJWT);
+        if (res?.status === 200) {
             toast.success('Update product successfully');
             setIsOpen(false);
         } else {

@@ -30,7 +30,7 @@ const authController = {
         return jwt.sign(
             {
                 id: user.id,
-                admin: user.admin,
+                isAdmin: user.isAdmin,
             },
             process.env.JWT_ACCESS_KEY,
             { expiresIn: "2h" }
@@ -42,7 +42,7 @@ const authController = {
         return jwt.sign(
             {
                 id: user.id,
-                admin: user.admin,
+                isAdmin: user.isAdmin,
             },
             process.env.JWT_REFRESH_KEY,
             { expiresIn: "365d" }

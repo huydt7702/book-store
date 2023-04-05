@@ -1,20 +1,32 @@
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import styles from './Sidebar.module.scss';
+import { useDispatch, useSelector } from 'react-redux';
+import { NavLink, useNavigate } from 'react-router-dom';
+
+import { createAxios } from '~/createInstance';
+import { logOutSuccess } from '~/redux/authSlice';
 import * as categoryService from '~/services/categoryService';
+import styles from './Sidebar.module.scss';
+
 const cx = classNames.bind(styles);
 
 function Sidebar() {
     const [categories, setCategories] = useState([]);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const user = useSelector((state) => state.auth.login.currentUser);
+    const accessToken = user?.accessToken;
+    let axiosJWT = createAxios(user, dispatch, logOutSuccess);
 
     useEffect(() => {
         const fetchApi = async () => {
-            const result = await categoryService.getAllCategories();
-            setCategories(result);
+            const res = await categoryService.getAllCategories(dispatch, navigate, accessToken, axiosJWT);
+            setCategories(res.data);
         };
 
         fetchApi();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

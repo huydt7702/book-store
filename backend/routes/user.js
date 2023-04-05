@@ -3,9 +3,9 @@ const { verifyToken, verifyTokenAndAdmin, verifyTokenAndUserAuthorization } = re
 
 const router = require("express").Router();
 //GET ALL USERS
-router.get("/", verifyToken, userController.getAllUsers);
+router.get("/", verifyTokenAndAdmin, userController.getAllUsers);
 
 //DELETE USER
-router.delete("/:id", userController.deleteUser);
+router.delete("/:id", verifyTokenAndAdmin, userController.deleteUser);
 
 module.exports = router;
