@@ -51,7 +51,7 @@ function Header() {
             const result = res.data.filter((product) => {
                 const value = product.title.toLowerCase();
 
-                return value.includes(debouncedValue.toLowerCase());
+                return value.startsWith(debouncedValue.toLowerCase());
             });
 
             setSearchResult(result);
